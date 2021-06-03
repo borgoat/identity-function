@@ -3,13 +3,12 @@ url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
-
 [packages]
 boto3 = "*"
 aws-lambda-powertools = "*"
+aws-lambda-builders = "*"
 
 [dev-packages]
-
 boto3 = "*"
 pytest = "*"
 pytest-cov = "*"

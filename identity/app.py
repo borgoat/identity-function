@@ -16,6 +16,7 @@ app = ApiGatewayResolver()
 # Global variables are reused across execution contexts (if available)
 # session = boto3.Session()
 
+
 @app.get("/hello")
 def hello():
     query_string_name = app.current_event.get_query_string_value(name="name", default_value="universe")
@@ -27,6 +28,7 @@ def hello_you(name):
     # query_strings_as_dict = app.current_event.query_string_parameters
     # json_payload = app.current_event.json_body
     return {"message": f"hello {name}"}
+
 
 @metrics.log_metrics(capture_cold_start_metric=True)
 @logger.inject_lambda_context(correlation_id_path=correlation_paths.API_GATEWAY_REST)

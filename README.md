@@ -134,5 +134,5 @@ We included a `Makefile` for your convenience - You can find all commands you ca
 Pipenv takes care of isolating dev dependencies and app dependencies. As SAM CLI requires a `requirements.txt` file, you'd need to generate one if new app dependencies have been added:
 
 ```bash
-identity-function$ pipenv lock -r > hello_world/requirements.txt
+identity-function$ pipenv lock -r > identity/requirements.txt
 ```
