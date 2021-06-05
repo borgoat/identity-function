@@ -16,7 +16,7 @@ Globals: # https://docs.aws.amazon.com/serverless-application-model/latest/devel
         BinaryMediaTypes:                   # https://awslabs.github.io/aws-lambda-powertools-python/latest/core/event_handler/api_gateway/#binary-responses
           - '*~1*'  # converts to */* for any binary type
     Function:
-        Timeout: 5
+        Timeout: 900
         MemorySize: 256
         Runtime: python3.8
         Tracing: Active # https://docs.aws.amazon.com/lambda/latest/dg/lambda-x-ray.html
