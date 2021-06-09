@@ -4,6 +4,8 @@ import os
 import tarfile
 import tempfile
 
+from enum import Enum
+
 import boto3
 from aws_lambda_powertools import Logger, Metrics, Tracer
 from aws_lambda_powertools.logging import correlation_paths
@@ -23,14 +25,23 @@ app = ApiGatewayResolver()
 session = boto3.Session()
 
 
+class LanguageEnum(str, Enum):
+    python = 'python'
+
+
+class DependencyManagerEnum(str, Enum):
+    pip = 'pip'
+
+
 class BuildModel(BaseModel):
-    archive: str
-    """Base64 encoded Tar archive - containing the source code"""
+    archive: str  #: Base64 encoded Tar archive - containing the source code
+    language: LanguageEnum
+    dependencyManager: DependencyManagerEnum
 
 
 @app.post('/build')
 def build():
-    payload: BuildModel = parse(event=app.current_event.raw_event,
+    request: BuildModel = parse(event=app.current_event.raw_event,
                                 model=BuildModel,
                                 envelope=envelopes.ApiGatewayEnvelope)
 
@@ -39,20 +50,20 @@ def build():
         dir_artifacts = os.path.join(td, 'artifacts')
         dir_scratch = os.path.join(td, 'scratch')
 
-        archive_raw = base64.b64decode(payload.archive, validate=True)
+        archive_raw = base64.b64decode(request.archive, validate=True)
         archive_buf = io.BytesIO(archive_raw)
         tar = tarfile.open(fileobj=archive_buf, mode='r:*')
         tar.extractall(path=dir_source)
-        lb = LambdaBuilder(  # TODO Get from event
-            language='python',
-            dependency_manager='pip',
+        lb = LambdaBuilder(
+            language=request.language,
+            dependency_manager=request.dependencyManager,
             application_framework=None,
         )
-        return lb.build(
+        return lb.build(  # TODO Get parameters from event
             source_dir=os.path.join(dir_source, 'identity'),
             artifacts_dir=dir_artifacts,
             scratch_dir=dir_scratch,
-            manifest_path=os.path.join(dir_source, 'identity', 'requirements.txt'),
+            manifest_path=os.path.join('requirements.txt'),
             runtime='python3.8',
         )
 
