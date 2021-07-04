@@ -30,9 +30,25 @@ Globals: # https://docs.aws.amazon.com/serverless-application-model/latest/devel
                 POWERTOOLS_SERVICE_NAME: hello
 
 Resources:
+    WorkflowPythonPipLayer:
+        Type: AWS::Serverless::LayerVersion
+        Properties:
+            ContentUri: layers
+        Metadata:
+            BuildMethod: makefile
+
+    WorkflowGoLayer:
+        Type: AWS::Serverless::LayerVersion
+        Properties:
+            ContentUri: layers
+        Metadata:
+            BuildMethod: makefile
+
     IdentityFunction:
         Type: AWS::Serverless::Function # More info about Function Resource: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
         Properties:
+            Layers:
+                - !Ref WorkflowGoLayer
             Handler: app.lambda_handler
             CodeUri: identity
             Description: Identity Function

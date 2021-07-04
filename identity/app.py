@@ -27,10 +27,12 @@ session = boto3.Session()
 
 class LanguageEnum(str, Enum):
     python = 'python'
+    go = 'go'
 
 
 class DependencyManagerEnum(str, Enum):
     pip = 'pip'
+    modules = 'modules'
 
 
 class BuildModel(BaseModel):
@@ -60,11 +62,14 @@ def build():
             application_framework=None,
         )
         return lb.build(  # TODO Get parameters from event
-            source_dir=os.path.join(dir_source, 'identity'),
+            source_dir=dir_source,
             artifacts_dir=dir_artifacts,
             scratch_dir=dir_scratch,
-            manifest_path=os.path.join('requirements.txt'),
-            runtime='python3.8',
+            manifest_path='go.mod',
+            runtime='go1.x',
+            options={
+                'artifact_executable_name': 'my-handler',
+            },
         )
 
 
