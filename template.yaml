@@ -30,13 +30,6 @@ Globals: # https://docs.aws.amazon.com/serverless-application-model/latest/devel
                 POWERTOOLS_SERVICE_NAME: hello
 
 Resources:
-    WorkflowPythonPipLayer:
-        Type: AWS::Serverless::LayerVersion
-        Properties:
-            ContentUri: layers
-        Metadata:
-            BuildMethod: makefile
-
     WorkflowGoLayer:
         Type: AWS::Serverless::LayerVersion
         Properties:

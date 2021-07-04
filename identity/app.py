@@ -67,6 +67,7 @@ def build():
             scratch_dir=dir_scratch,
             manifest_path='go.mod',
             runtime='go1.x',
+            executable_search_paths=['/opt/go/bin'],
             options={
                 'artifact_executable_name': 'my-handler',
             },
