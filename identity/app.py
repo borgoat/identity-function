@@ -3,6 +3,7 @@ import io
 import os
 import tarfile
 import tempfile
+import zipfile
 
 from enum import Enum
 
@@ -61,7 +62,7 @@ def build():
             dependency_manager=request.dependencyManager,
             application_framework=None,
         )
-        return lb.build(  # TODO Get parameters from event
+        res = lb.build(  # TODO Get parameters from event
             source_dir=dir_source,
             artifacts_dir=dir_artifacts,
             scratch_dir=dir_scratch,
@@ -72,6 +73,14 @@ def build():
                 'artifact_executable_name': 'my-handler',
             },
         )
+        logger.debug(res)
+        out_buf = io.BytesIO()
+        out_zip = zipfile.ZipFile(out_buf, 'x')
+        for root, dirs, files in os.walk(dir_artifacts):
+            for file in files:
+                out_zip.write(os.path.join(root, file),
+                              os.path.relpath(os.path.join(root, file), dir_artifacts))
+        return {'lambda_archive': base64.b64encode(out_buf.getvalue()).decode()}
 
 
 @app.get("/hello")
